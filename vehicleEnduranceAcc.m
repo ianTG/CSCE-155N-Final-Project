@@ -1,28 +1,21 @@
-function [] = vehicleEnduranceAcc()
-    %setting the parameters for the equations of power and 
-    cSubZero = 0.6;
-    cSubOne = 0.02;
-    cSubTwo = 0.0015;
-    
-    enginePower = [0:1:125];
+function [] = vehicleEnduranceAcc(cSubZero,cSubOne,cSubTwo,powerRange)
+
     %creating the array for values to be put in after being solved in for
     %loop
-    efficiencyArray = zeros(1,126);
+    efficiency = zeros(1,(powerRange(2)));
     %for loop is used to do the math and put the output into the array
     %created above
-    for i = (1:126)
-        powerLoss = cSubZero + (cSubOne*(enginePower(:,i))) + (cSubTwo*(enginePower(:,i))^ 2);
-        powerOut = (enginePower(:,i)) - powerLoss;
-        efficiency = powerOut / (enginePower(:,i));
-            for j = (1:126)
-                efficiencyArray(1,i) = efficiency;
-            end
-        
+    enginePower = powerRange(1):0.1:powerRange(2);
+    for i = 1:numel(enginePower)
+        powerLoss = cSubZero + (cSubOne*(enginePower(i))) + (cSubTwo*(enginePower(i))^2);
+        powerOut = (enginePower(i) - powerLoss);
+        efficiency(i) = (powerOut / enginePower(i));
     end
     %uses the finsihed arrays to create a plot to make the curve
-    plot(enginePower,efficiencyArray);
+    plot(enginePower,efficiency);
     title('Efficiency vs. Power');
     xlabel('Power');
     ylabel('Efficiency');
-    xlim([0,125]);
+    xlim([powerRange(1),powerRange(end)]);
+    ylim([0 1]);
 end
